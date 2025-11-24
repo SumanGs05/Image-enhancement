@@ -1,0 +1,66 @@
+GAMMA CORRECTION-->>
+
+function [ result ] = gammaCorrection(image, a, gamma)
+image = im2double(image);
+result = a * (image .^ gamma);
+end
+
+red compensate-->>
+
+
+function ret = redCompensate( im, w )
+a = 1;
+r = im2double(im(:,:,1));
+g = im2double(im(:,:,2));
+b = im2double(im(:,:,3));
+[height,width,~] = size(im);
+padsize = [(w-1)/2,(w-1)/2];
+padr = padarray(r, padsize, 'symmetric', 'both');
+padg = padarray(g, padsize, 'symmetric', 'both');
+ret = im;
+for i = 1:height
+    for j = 1:width
+        slider = padr(i:i+w-1,j:j+w-1);
+        slideg = padg(i:i+w-1,j:j+w-1);
+        r_mean = mean(mean(slider));
+        g_mean = mean(mean(slideg));
+        Irc = r(i,j) + a * (g_mean - r_mean) * (1-r(i,j)) * g(i,j);
+        Irc = uint8(Irc * 255);
+        ret(i, j, 1) = Irc;
+    end
+end
+end
+
+
+sharpning-->>
+
+function [ result ] = sharp(image)
+image = im2double(image);
+GaussKernel = fspecial('gaussian', 5, 3);
+imBlur = imfilter(image,GaussKernel);
+unSharpMask = image - imBlur;
+stretchIm = hisStretching(unSharpMask);
+result = (image + stretchIm)/2;
+end
+
+
+blue correction
+
+
+function [ ret ] = blueCompensate( im )
+im=im2double(im);
+[M, N, ~]=size(im);
+r=im(:,:,1);
+g=im(:,:,2);
+b=im(:,:,3);
+meanB=mean(mean(b));
+meanG=mean(mean(g));
+for i=1:M
+    for j=1:N
+        b(i, j)=b(i, j)+(meanG-meanB)*(1-b(i, j))*g(i, j);
+    end
+end
+ret(:,:,1)=r;
+ret(:,:,2)=g;
+ret(:,:,3)=b;
+end
