@@ -19,8 +19,8 @@ im2 = simple_color_balance(im1);
 subplot(2,2,2)
 imshow(im2);
 xlabel('white balance');
-% gamma correction
-input1 = gammaCorrection(im2,1,1.2);
+% gamma correction - reduced gamma to prevent over-brightening
+input1 = gammaCorrection(im2,1,0.9);
 subplot(2,2,3)
 imshow(input1);
 xlabel('gamma correction');
@@ -74,7 +74,10 @@ end
 R = pyramid_reconstruct(R_r);
 G = pyramid_reconstruct(G_g);
 B = pyramid_reconstruct(B_b);
+% Normalize and clamp fusion result
 fusion = cat(3, R,G,B);
+fusion = im2double(fusion);
+fusion = max(min(fusion, 1), 0);  % Clamp to [0,1]
 uiqm = UIQM(fusion)
 uciqe = UCIQE(fusion)
 figure,imshow(fusion),title("fusion image");
