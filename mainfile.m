@@ -77,4 +77,5 @@ B = pyramid_reconstruct(B_b);
 fusion = cat(3, R,G,B);
 uiqm = UIQM(fusion)
 uciqe = UCIQE(fusion)
-figure,imshow(fusion),title("fusion image");
+figure,imshow(fusion),title("fusion image");
+
