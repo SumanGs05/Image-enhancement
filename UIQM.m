@@ -1,5 +1,5 @@
 function [ uiqm_value ] = UIQM(image)
-% Underwater Image Quality Measure
+
 % Simplified version based on colorfulness, sharpness, and contrast
 image = im2double(image);
 
