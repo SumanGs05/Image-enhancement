@@ -1,6 +1,6 @@
 function [ uiqm_value ] = UIQM(image)
 
-% Simplified version based on colorfulness, sharpness, and contrast
+
 image = im2double(image);
 
 % 1. Colorfulness (UICM)
